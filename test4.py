@@ -4,7 +4,7 @@ from scipy import signal
 import matplotlib.pyplot as plt
 from rram5 import rram
 
-r = rram(shape=(2, 2), deltaGap0=0.05, model_switch=0)
+r = rram(shape=(2, 2), gap_ini=2e-10, deltaGap0=0.05, model_switch=0)
 
 T = 205e-9
 dt = 1e-12
