@@ -3,7 +3,7 @@ import numpy as np
 
 class rram:
 
-    def __init__(self, shape, gap_ini, deltaGap0, model_switch):
+    def __init__(self, shape, gap_ini, deltaGap0, model_switch, I0, V0, g0):
         self.shape = shape
         
         # Switch to select Standard Model (0) or Dynamic Model (1)
@@ -21,13 +21,13 @@ class rram:
 
         # average switching fitting parameters g0, V0, I0, beta, gamma0
         # parameter real		g0		= 0.25e-9 from(0:2e-9);
-        self.g0 = 0.25e-9
+        self.g0 = g0
         # parameter real		V0		= 0.25    from(0:10);
-        self.V0 = 0.5
+        self.V0 = V0
         # parameter real		Vel0		= 10    from(0:20);
         self.Vel0 = 10
         # parameter real		I0		= 1000e-6 from(0:1e-2);
-        self.I0 = 1e-6 # 1000e-6
+        self.I0 = I0
         # parameter real		beta		= 0.8    from(0:inf);
         self.beta = 0.8
         # parameter real		gamma0		= 16  from(0:inf); 
