@@ -8,20 +8,21 @@ from rram import rram
 ##############################################
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--gap_min', type=float, default=2e-9)
+parser.add_argument('--gap_max', type=float, default=17e-9)
 parser.add_argument('--I0', type=float, default=1e-6)
-parser.add_argument('--V0', type=float, default=0.25)
 parser.add_argument('--g0', type=float, default=0.25e-9)
 args = parser.parse_args()
 
-name = './results/%0.12f_%0.12f_%0.12f.npy' % (args.I0, args.V0, args.g0)
+name = './results/%0.12f_%0.12f_%0.12f_%0.12f.npy' % (args.gap_min, args.gap_max, args.I0, args.g0)
 
 ##############################################
 
-t_ramp = 10e-3
+t_ramp = 100e-3
 
 ############################
 
-r = rram(shape=(2, 2), gap_ini=19e-10, deltaGap0=1e-4, model_switch=0, I0=args.I0, V0=args.V0, g0=args.g0)
+r = rram(shape=(2, 2), gap_min=args.gap_min, gap_max=args.gap_max, gap_ini=args.gap_max, deltaGap0=1e-4, model_switch=0, I0=args.I0, g0=args.g0)
 
 dt = 1e-7
 Vs = np.concatenate((np.linspace(0., 2., t_ramp/dt), np.linspace(2., 2., 1e-6/dt), np.linspace(2., 0., t_ramp/dt)))
@@ -38,7 +39,7 @@ Is1 = np.copy(Is)
 
 ############################
 
-r = rram(shape=(2, 2), gap_ini=2e-10, deltaGap0=1e-4, model_switch=0, I0=args.I0, V0=args.V0, g0=args.g0)
+r = rram(shape=(2, 2), gap_min=args.gap_min, gap_max=args.gap_max, gap_ini=args.gap_min, deltaGap0=1e-4, model_switch=0, I0=args.I0, g0=args.g0)
 
 dt = 1e-7
 Vs = np.concatenate((np.linspace(0., -2., t_ramp/dt), np.linspace(-2., -2., 1e-6/dt), np.linspace(-2., 0., t_ramp/dt)))

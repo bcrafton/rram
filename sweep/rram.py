@@ -3,7 +3,7 @@ import numpy as np
 
 class rram:
 
-    def __init__(self, shape, gap_ini, deltaGap0, model_switch, I0, V0, g0):
+    def __init__(self, shape, gap_min, gap_max, gap_ini, deltaGap0, model_switch, I0, g0):
         self.shape = shape
         
         # Switch to select Standard Model (0) or Dynamic Model (1)
@@ -23,7 +23,7 @@ class rram:
         # parameter real		g0		= 0.25e-9 from(0:2e-9);
         self.g0 = g0
         # parameter real		V0		= 0.25    from(0:10);
-        self.V0 = V0
+        # self.V0 = V0
         # parameter real		Vel0		= 10    from(0:20);
         self.Vel0 = 10
         # parameter real		I0		= 1000e-6 from(0:1e-2);
@@ -59,10 +59,10 @@ class rram:
         self.gap_ini = gap_ini
         # minimum gap distance, gap_min
         # parameter real		gap_min		= 2e-10 from(0:100e-10);
-        self.gap_min = 2e-10
+        self.gap_min = gap_min
         # maximum gap distance, gap_max
         # parameter real		gap_max		= 17e-10 from(0:100e-10);
-        self.gap_max = 17e-10
+        self.gap_max = gap_max
         # thermal resistance
         # parameter real		Rth		= 2.1e3 from(0:inf);
         self.Rth = 2.1e3
@@ -166,9 +166,10 @@ class rram:
         # self.V0 = (see test_sinh.py). exponential. how can we have exponential wrt to voltage ? 
         # self.V0 = does both range and min/max
 		    
-        self.Itb = self.I0 * np.exp(-self.gap / self.g0) * np.sinh(self.Vtb / self.V0)
+        self.Itb = self.I0 * np.exp(-self.gap / self.g0) * self.Vtb # np.sinh(self.Vtb / self.V0)
 		
         return self.Itb
     
-
+    def R(self):
+        return 1. / self.I0 * np.exp(-self.gap / self.g0)
 

@@ -17,9 +17,9 @@ cmd_args = parser.parse_args()
 
 def run_command(param):
     
-    name = '%s_%0.12f_%0.12f_%0.12f' % (param['benchmark'], param['I0'], param['V0'], param['g0'])
+    name = '%s_%0.12f_%0.12f_%0.12f_%0.12f' % (param['benchmark'], param['gap_min'], param['gap_max'], param['I0'], param['g0'])
     
-    cmd = "python %s --I0 %0.12f --V0 %0.12f --g0 %0.12f" % (param['benchmark'], param['I0'], param['V0'], param['g0'])
+    cmd = "python %s --gap_min %0.12f --gap_max %0.12f --I0 %0.12f --g0 %0.12f" % (param['benchmark'], param['gap_min'], param['gap_max'], param['I0'], param['g0'])
 
     if cmd_args.print:
         print (cmd)

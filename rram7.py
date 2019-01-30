@@ -3,7 +3,7 @@ import numpy as np
 
 class rram:
 
-    def __init__(self, shape, gap_ini=2e-10, deltaGap0=1e-4, model_switch=0, I0=1.29154967e-07, V0=6.00000000e-01, g0=4.64158883e-10):
+    def __init__(self, shape, gap_min, gap_max, gap_ini, deltaGap0, model_switch, I0, g0):
         self.shape = shape
         
         # Switch to select Standard Model (0) or Dynamic Model (1)
@@ -21,13 +21,13 @@ class rram:
 
         # average switching fitting parameters g0, V0, I0, beta, gamma0
         # parameter real		g0		= 0.25e-9 from(0:2e-9);
-        self.g0 = 4.64158883e-10
+        self.g0 = g0
         # parameter real		V0		= 0.25    from(0:10);
-        self.V0 = 0.5
+        # self.V0 = 0.5
         # parameter real		Vel0		= 10    from(0:20);
         self.Vel0 = 10
         # parameter real		I0		= 1000e-6 from(0:1e-2);
-        self.I0 = 1.29154967e-07
+        self.I0 = I0
         # parameter real		beta		= 0.8    from(0:inf);
         self.beta = 0.8
         # parameter real		gamma0		= 16  from(0:inf); 
@@ -59,10 +59,10 @@ class rram:
         self.gap_ini = gap_ini
         # minimum gap distance, gap_min
         # parameter real		gap_min		= 2e-10 from(0:100e-10);
-        self.gap_min = 2e-10
+        self.gap_min = gap_min
         # maximum gap distance, gap_max
         # parameter real		gap_max		= 17e-10 from(0:100e-10);
-        self.gap_max = 17e-10
+        self.gap_max = gap_max
         # thermal resistance
         # parameter real		Rth		= 2.1e3 from(0:inf);
         self.Rth = 2.1e3
@@ -153,13 +153,16 @@ class rram:
         # look this up in manual we downloaded.
 		    # its just integral(a) + b
 		    # so we can just start gap at gap_ini and then add these 2 each time.
-        self.gap += (self.gap_ddt + self.gap_random_ddt) / 10. * dt
+        self.gap += (self.gap_ddt + self.gap_random_ddt) * dt
 		
         # this just a clip func
+        '''
         if(self.gap < self.gap_min):
             self.gap = self.gap_min
         elif (self.gap > self.gap_max):
             self.gap = self.gap_max
+        '''
+        self.gap = np.clip(self.gap, self.gap_min, self.gap_max)
 		
         # self.I0 = base resistance
         # self.g0 = ratio. g0 = gap_max -> range = 834. g0 = gap_min -> range = 75k (for I0 = 1e-6)
@@ -171,8 +174,7 @@ class rram:
         return self.Itb
     
     def R(self):
-        Itb = self.I0 * np.exp(-self.gap / self.g0) 
-        return 1. / Itb
+        return 1. / (self.I0 * np.exp(-self.gap / self.g0)) 
         
         
         
