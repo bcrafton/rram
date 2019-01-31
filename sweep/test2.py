@@ -2,6 +2,7 @@
 import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
+import argparse
 from rram7 import rram
 
 t_ramp = 1e-6
@@ -10,10 +11,19 @@ dt = 1e-10
 
 ############################
 
-gap_min=2e-11
-gap_max=19e-11
-I0=1e-6
-g0=2.5e-11
+parser = argparse.ArgumentParser()
+parser.add_argument('--gap_min', type=float, default=4e-11)
+parser.add_argument('--gap_max', type=float, default=4e-10)
+parser.add_argument('--I0', type=float, default=4.5e-7)
+parser.add_argument('--g0', type=float, default=7.5e-11)
+args = parser.parse_args()
+
+print (args)
+
+gap_min=args.gap_min
+gap_max=args.gap_max
+I0=args.I0
+g0=args.g0
 deltaGap0=1e-4
 model_switch=0
 
@@ -66,15 +76,25 @@ Rs = np.concatenate((Rs1, Rs2))
 
 ############################
 
-plt.rcParams['font.sans-serif'] = "Arial"
-plt.rcParams['font.family'] = "sans-serif"
-plt.rcParams['font.size'] = 10.
-f, ax = plt.subplots(2, 1)
-f.set_size_inches(3.5, 3.5)
+ratio = np.max(Rs) / np.min(Rs)
 
-ax[0].semilogy(Vs, Is)
-ax[1].semilogy(Ts, Rs)
+flag = True
+flag = flag and (np.min(Rs) > 5e5) and (np.min(Rs) < 5e6) 
+flag = flag and (np.max(Rs) > 5e7) and (np.max(Rs) < 5e8)
+flag = flag and (ratio > 90.)      and (ratio < 150.)
 
-plt.show()
+if flag:
+    plt.rcParams['font.sans-serif'] = "Arial"
+    plt.rcParams['font.family'] = "sans-serif"
+    plt.rcParams['font.size'] = 10.
+    f, ax = plt.subplots(2, 1)
+    f.set_size_inches(3.5, 3.5)
+
+    ax[0].semilogy(Vs, Is)
+    ax[1].semilogy(Ts, Rs)
+
+    name = '%0.12f_%0.12f_%0.12f_%0.12f.png' % (args.gap_min, args.gap_max, args.I0, args.g0)
+    plt.savefig(name)
+    
 ############################
 

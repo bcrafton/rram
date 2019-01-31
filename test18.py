@@ -5,22 +5,13 @@ import matplotlib.pyplot as plt
 from rram7 import rram
 
 t_ramp = 1e-6
-vdd = 2.
+vdd = 1.3
+
+############################
+
+r = rram(shape=(2, 2), gap_min=4e-11, gap_max=4e-10, gap_ini=4e-10, I0=4.64158883e-07, g0=7.74263683e-11, deltaGap0=1e-4, model_switch=0)
+
 dt = 1e-10
-
-############################
-
-gap_min=2e-11
-gap_max=19e-11
-I0=1e-6
-g0=2.5e-11
-deltaGap0=1e-4
-model_switch=0
-
-############################
-
-r = rram(shape=(2, 2), gap_min=gap_min, gap_max=gap_max, gap_ini=gap_max, I0=I0, g0=g0, deltaGap0=deltaGap0, model_switch=model_switch)
-
 Vs = np.concatenate((np.linspace(0., vdd, t_ramp/dt), np.linspace(vdd, vdd, 1e-6/dt), np.linspace(vdd, 0., t_ramp/dt)))
 steps = np.shape(Vs)[0] 
 Ts = np.linspace(0., steps*dt, steps)
@@ -38,8 +29,9 @@ Rs1 = np.copy(Rs)
 
 ############################
 
-r = rram(shape=(2, 2), gap_min=gap_min, gap_max=gap_max, gap_ini=gap_min, I0=I0, g0=g0, deltaGap0=deltaGap0, model_switch=model_switch)
+r = rram(shape=(2, 2), gap_min=4e-11, gap_max=4e-10, gap_ini=4e-11, I0=4.64158883e-07, g0=7.74263683e-11, deltaGap0=1e-4, model_switch=0)
 
+dt = 1e-10
 Vs = np.concatenate((np.linspace(0., -vdd, t_ramp/dt), np.linspace(-vdd, -vdd, 1e-6/dt), np.linspace(-vdd, 0., t_ramp/dt)))
 steps = np.shape(Vs)[0] 
 Ts = np.linspace(0., steps*dt, steps)
