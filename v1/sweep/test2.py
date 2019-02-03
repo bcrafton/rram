@@ -6,7 +6,7 @@ import argparse
 from rram7 import rram
 
 t_ramp = 1e-6
-vdd = 2.
+vdd = 1.
 dt = 1e-10
 
 ############################

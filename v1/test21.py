@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 import argparse
 from rram8 import rram
 
-t_ramp = 1e-5
+t_ramp = 1e-1
 vdd = 1.0
-dt = 1e-10
+dt = 1e-4
 
 ############################
 
