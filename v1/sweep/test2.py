@@ -6,16 +6,16 @@ import argparse
 from rram import rram
 
 t_ramp = 1e-6
-vdd = 1.3
+vdd = 2.
 dt = 1e-10
 
 ############################
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--gap_min', type=float, default=4e-11)
-parser.add_argument('--gap_max', type=float, default=4e-10)
-parser.add_argument('--I0', type=float, default=4.5e-7)
-parser.add_argument('--g0', type=float, default=7.5e-11)
+parser.add_argument('--gap_min', type=float, default=2e-10)
+parser.add_argument('--gap_max', type=float, default=19e-10)
+parser.add_argument('--I0', type=float, default=1e-6)
+parser.add_argument('--g0', type=float, default=0.375e-9)
 args = parser.parse_args()
 
 print (args)
@@ -83,6 +83,10 @@ flag = flag and (np.min(Rs) > 5e5) and (np.min(Rs) < 5e6)
 flag = flag and (np.max(Rs) > 5e7) and (np.max(Rs) < 5e8)
 flag = flag and (ratio > 90.)      and (ratio < 150.)
 
+print (np.min(Rs) / 1e6, np.max(Rs) / 1e6, ratio)
+
+flag = True
+
 if flag:
     plt.rcParams['font.sans-serif'] = "Arial"
     plt.rcParams['font.family'] = "sans-serif"
@@ -94,7 +98,7 @@ if flag:
     ax[1].semilogy(Ts, Rs)
 
     name = '%0.12f_%0.12f_%0.12f_%0.12f.png' % (args.gap_min, args.gap_max, args.I0, args.g0)
-    plt.savefig(name)
+    plt.show()
     
 ############################
 
