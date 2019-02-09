@@ -23,7 +23,7 @@ class rram:
         # parameter real		g0		= 0.25e-9 from(0:2e-9);
         self.g0 = g0
         # parameter real		V0		= 0.25    from(0:10);
-        # self.V0 = V0
+        # self.V0 = 0.5
         # parameter real		Vel0		= 10    from(0:20);
         self.Vel0 = 10
         # parameter real		I0		= 1000e-6 from(0:1e-2);
@@ -121,7 +121,10 @@ class rram:
         self.Vtb = Vin
 
         # Itb = I(TE,BE);
-        self.Itb = 0 
+        # dont reset this to zero !!
+        # self.Itb = 0 
+
+        # it has very little effect anyways.
 
         # T_cur = T_ini + abs( Vtb * Itb * Rth);
         self.T_cur = self.T_ini + abs( self.Vtb * self.Itb * self.Rth)
@@ -156,10 +159,13 @@ class rram:
         self.gap += (self.gap_ddt + self.gap_random_ddt) * dt
 		
         # this just a clip func
+        '''
         if(self.gap < self.gap_min):
             self.gap = self.gap_min
         elif (self.gap > self.gap_max):
             self.gap = self.gap_max
+        '''
+        self.gap = np.clip(self.gap, self.gap_min, self.gap_max)
 		
         # self.I0 = base resistance
         # self.g0 = ratio. g0 = gap_max -> range = 834. g0 = gap_min -> range = 75k (for I0 = 1e-6)
@@ -171,5 +177,9 @@ class rram:
         return self.Itb
     
     def R(self):
-        return 1. / self.I0 * np.exp(-self.gap / self.g0)
+        return 1. / (self.I0 * np.exp(-self.gap / self.g0)) 
+        
+        
+        
+       
 

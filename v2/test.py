@@ -4,14 +4,18 @@ from scipy import signal
 import matplotlib.pyplot as plt
 from rram import rram
 
-r = rram()
+####################################
+
+# X1 mid1 mid2 RRAM_v_2_0_Beta x0=0    w0=5e-9   Ei=0.82 Eh=1.12 deltaGap=4e-5   **x0=0, w0=5nm are initial conditions for RESET
+# X1 mid1 mid2 RRAM_v_2_0_Beta x0=3e-9 w0=0.5e-9 
 
 ####################################
 
-r = rram()
+r = rram(x0=3e-10, w0=5e-9)
 
-dt = 1e-7
-Vs1 = np.concatenate((np.linspace(0., -2., 4e-3/dt), np.linspace(-2., -2., 1e-6/dt), np.linspace(-2., 0., 4e-3/dt)))
+dt = 1e-12
+Vs1 = np.concatenate((np.linspace(0., 2., 1e-9/dt), np.linspace(2., 2., 8e-9/dt), np.linspace(2., 0., 1e-9/dt)))
+Vs1 = Vs1 * -1.
 steps = np.shape(Vs1)[0] 
 Is1 = []
 
@@ -23,10 +27,10 @@ Is1 = np.array(Is1) * -1.
 
 ####################################
 
-r = rram()
+r = rram(x0=3e-9, w0=0.5e-9)
 
-dt = 1e-7
-Vs2 = np.concatenate((np.linspace(0., 2., 4e-3/dt), np.linspace(2., 2., 1e-6/dt), np.linspace(2., 0., 4e-3/dt)))
+dt = 1e-12
+Vs2 = np.concatenate((np.linspace(0., 2., 1e-9/dt), np.linspace(2., 2., 8e-9/dt), np.linspace(2., 0., 1e-9/dt)))
 steps = np.shape(Vs2)[0] 
 Is2 = []
 
@@ -40,15 +44,11 @@ Ts = np.linspace(0., 2*steps*dt, 2*steps)
 Vs = np.concatenate((Vs1, Vs2))
 Is = np.concatenate((Is1, Is2))
 
-print (np.shape(Vs))
-print (np.shape(Is))
-
-print (np.min(Vs))
-print (np.max(Vs))
-
-print (np.min(Is))
-print (np.max(Is))
-
+'''
+Ts = np.linspace(0., steps*dt, steps)
+Vs = Vs1
+Is = Is1
+'''
 ####################################
 
 plt.subplot(3, 1, 1)

@@ -3,10 +3,10 @@ import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
 import argparse
-from rram7 import rram
+from rram import rram
 
 t_ramp = 1e-6
-vdd = 1.
+vdd = 1.3
 dt = 1e-10
 
 ############################

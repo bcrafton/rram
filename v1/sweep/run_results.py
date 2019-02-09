@@ -35,7 +35,7 @@ runs = get_runs()
 ##############################################
 
 num_runs = len(runs)
-parallel_runs = 4
+parallel_runs = 6
 
 for run in range(0, num_runs, parallel_runs):
     threads = []
