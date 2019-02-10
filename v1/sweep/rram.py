@@ -136,13 +136,13 @@ class rram:
 		        
         self.gamma = self.gamma_ini - self.beta * np.power(((self.gap)/1e-9), 3)
 		
-        if ((self.gamma * abs(self.Vtb) / self.tox) < self.F_min):
+        if ((self.gamma * abs(2. * self.Vtb) / self.tox) < self.F_min):
             self.gamma = 0
 		
         # calculate next time step gap situation
         # gap time derivative - determinant part
 		    # gap_ddt = - Vel0 * exp(- q * Ea / kb / T_cur) * sinh(gamma * a0 / tox * q * Vtb / kb / T_cur);
-        self.gap_ddt = -self.Vel0 * np.exp(-self.q * self.Ea / self.kb / self.T_cur) * np.sinh(self.gamma * self.a0 / self.tox * self.q * self.Vtb / self.kb / self.T_cur)
+        self.gap_ddt = -self.Vel0 * np.exp(-self.q * self.Ea / self.kb / self.T_cur) * np.sinh(self.gamma * self.a0 / self.tox * self.q * (2. * self.Vtb) / self.kb / self.T_cur)
 
         # gap time derivative - variation part
 		    # deltaGap = deltaGap0 * model_switch;
