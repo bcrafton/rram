@@ -31,7 +31,7 @@ class rram:
         # parameter real		beta		= 0.8    from(0:inf);
         self.beta = 0.8
         # parameter real		gamma0		= 16  from(0:inf); 
-        self.gamma0 = 16
+        self.gamma0 = np.ones(shape=self.shape) * 16.
 
         # threshold temperature for significant random variations
         # parameter real		T_crit		= 450		from(390, 460);
@@ -96,13 +96,13 @@ class rram:
 
         # present gap status
         # real			gap;
-        self.gap = self.gap_ini
+        self.gap = np.ones(shape=self.shape) * self.gap_ini
 
         # local enhancement factor, gamma
         # real			gamma;
         # real			gamma_ini;
-        self.gamma = 0.
-        self.gamma_ini = 0.
+        self.gamma = np.zeros(shape=self.shape)
+        self.gamma_ini = np.zeros(shape=self.shape)
 
         #  random number
         # integer			rand_seed;
@@ -111,6 +111,8 @@ class rram:
         self.deltaGap = 0.
 
     def step(self, Vin, dt):
+
+        assert(np.shape(Vin) == self.shape)
 
         # parameter real pulse_width = 20n;
         # 	analog begin
@@ -131,13 +133,13 @@ class rram:
         
         self.gamma_ini = self.gamma0
         
-        if (self.Vtb < 0):
-		        self.gamma_ini = 16
+        idx = np.where(self.Vtb < 0.)
+        self.gamma_ini[idx] = 16.
 		        
         self.gamma = self.gamma_ini - self.beta * np.power(((self.gap)/1e-9), 3)
 		
-        if ((self.gamma * abs(2. * self.Vtb) / self.tox) < self.F_min):
-            self.gamma = 0
+        idx = np.where((self.gamma * np.abs(2. * self.Vtb) / self.tox) < self.F_min)
+        self.gamma[idx] = 0.
 		
         # calculate next time step gap situation
         # gap time derivative - determinant part
@@ -156,7 +158,7 @@ class rram:
         # look this up in manual we downloaded.
 		    # its just integral(a) + b
 		    # so we can just start gap at gap_ini and then add these 2 each time.
-        self.gap += (self.gap_ddt + self.gap_random_ddt) * dt
+        gap1 = self.gap + (self.gap_ddt + self.gap_random_ddt) * dt
 		
         # this just a clip func
         '''
@@ -165,16 +167,18 @@ class rram:
         elif (self.gap > self.gap_max):
             self.gap = self.gap_max
         '''
-        self.gap = np.clip(self.gap, self.gap_min, self.gap_max)
+        gap1 = np.clip(gap1, self.gap_min, self.gap_max)
 		
         # self.I0 = base resistance
         # self.g0 = ratio. g0 = gap_max -> range = 834. g0 = gap_min -> range = 75k (for I0 = 1e-6)
         # self.V0 = (see test_sinh.py). exponential. how can we have exponential wrt to voltage ? 
         # self.V0 = does both range and min/max
 		    
-        self.Itb = self.I0 * np.exp(-self.gap / self.g0) * self.Vtb # np.sinh(self.Vtb / self.V0)
-		
-        return self.Itb
+        Itb = self.I0 * np.exp(-self.gap / self.g0) * self.Vtb # np.sinh(self.Vtb / self.V0)
+
+        # assert(np.shape(self.Itb) == self.shape)
+
+        return 1. / (self.I0 * np.exp(-gap1 / self.g0))  - 1. / (self.I0 * np.exp(-self.gap / self.g0)) 
     
     def R(self):
         return 1. / (self.I0 * np.exp(-self.gap / self.g0)) 

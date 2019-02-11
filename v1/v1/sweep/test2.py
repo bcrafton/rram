@@ -48,7 +48,7 @@ Rs1 = np.copy(Rs)
 
 ############################
 
-r = rram(shape=(2, 2), gap_min=gap_min, gap_max=gap_max, gap_ini=gap_min, I0=I0, g0=g0, deltaGap0=deltaGap0, model_switch=model_switch)
+# r = rram(shape=(2, 2), gap_min=gap_min, gap_max=gap_max, gap_ini=gap_min, I0=I0, g0=g0, deltaGap0=deltaGap0, model_switch=model_switch)
 
 Vs = np.concatenate((np.linspace(0., -vdd, t_ramp/dt), np.linspace(-vdd, -vdd, 1e-6/dt), np.linspace(-vdd, 0., t_ramp/dt)))
 steps = np.shape(Vs)[0] 
