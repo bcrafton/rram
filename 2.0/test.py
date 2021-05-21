@@ -11,11 +11,19 @@ from rram import rram
 
 ####################################
 
-r = rram(x0=3e-10, w0=5e-9)
+dt = 1e-7
+Vs = np.concatenate((
+np.linspace(0., 2., int(10e-6/dt)), 
+np.linspace(2., 2., int(80e-6/dt)), 
+np.linspace(2., 0., int(10e-6/dt))
+))
 
-dt = 1e-12
-Vs1 = np.concatenate((np.linspace(0., 2., 1e-9/dt), np.linspace(2., 2., 8e-9/dt), np.linspace(2., 0., 1e-9/dt)))
-Vs1 = Vs1 * -1.
+####################################
+
+# r = rram(x0=3e-9, w0=0.5e-9)
+r = rram(x0=0., w0=5e-9)
+
+Vs1 = Vs * -1.
 steps = np.shape(Vs1)[0] 
 Is1 = []
 
@@ -28,10 +36,9 @@ Is1 = np.array(Is1) * -1.
 ####################################
 
 r = rram(x0=3e-9, w0=0.5e-9)
+# r = rram(x0=0., w0=5e-9)
 
-dt = 1e-12
-Vs2 = np.concatenate((np.linspace(0., 2., 1e-9/dt), np.linspace(2., 2., 8e-9/dt), np.linspace(2., 0., 1e-9/dt)))
-steps = np.shape(Vs2)[0] 
+Vs2 = Vs
 Is2 = []
 
 for v in Vs2:
@@ -43,21 +50,24 @@ for v in Vs2:
 Ts = np.linspace(0., 2*steps*dt, 2*steps)
 Vs = np.concatenate((Vs1, Vs2))
 Is = np.concatenate((Is1, Is2))
+# Rs = np.where(np.absolute(Is) == 0, np.zeros_like(Is), Vs / Is)
 
-'''
-Ts = np.linspace(0., steps*dt, steps)
-Vs = Vs1
-Is = Is1
-'''
 ####################################
 
-plt.subplot(3, 1, 1)
+plt.subplot(4, 1, 1)
 plt.plot(Ts, Vs)
     
-plt.subplot(3, 1, 2)
+plt.subplot(4, 1, 2)
 plt.plot(Ts, Is)
 
-plt.subplot(3, 1, 3)
+plt.subplot(4, 1, 3)
 plt.semilogy(Vs, Is)
 
+# plt.subplot(4, 1, 4)
+# plt.plot(Ts, Rs)
+
 plt.show()
+
+####################################
+
+

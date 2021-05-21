@@ -19,8 +19,8 @@ class rram:
         self.L0 = 3e-9        # unit: m     L0 is defined as the initial fixed length of the RRAM switching layer
         # self.x0 = 3e-9        # unit: m    x0 is defined as the initial length of gap region during both SET/RESET (for SET: x0=L0)
         # self.w0 = 0.5e-9  	  # unit: m    initial CF width
-        self.x0 = x0
-        self.w0 = w0
+        self.x0 = x0 # 3e-9
+        self.w0 = w0 # 0.5e-9
         self.WCF = 5e-9       # unit: m   fixed width of the RRAM switching layer
         self.weff = 0.5e-9    # unit: m     effective CF extending width
         self.I0 = 1e13        # unit: A/m^2    hopping current density in the gap region
@@ -87,7 +87,7 @@ class rram:
             elif ( self.x > 0. ):
                 if ( self.x < self.L0 ):
 	                  dxr1 = self.a * self.f * np.exp(-(self.Ei + self.r * self.Z * Vg) / (self.Kb * self.Temp))
-	                  dxr2 = self.a * self.f * np.exp(-self.Eh / (self.Kb * self.Temp)) * np.sinh(self.alphah * self.Z * -1. * Vg / (self.x * self.Kb * self.Temp))
+	                  dxr2 = self.a * self.f * np.exp(-self.Eh / (self.Kb * self.Temp)) * np.sinh(self.alphah * self.Z * -1. * Vg / (max(self.x, 1e-11) * self.Kb * self.Temp))
 	                  dx = (dxr1 < dxr2) * dxr1 + (dxr2 <= dxr1) * dxr2
                 elif ( self.x >= self.L0 ):
                     dx = 0.
@@ -117,14 +117,15 @@ class rram:
                 if ( dw == 0. ):
 	                  self.cf_random_ddt = 0.
                 else:
-	                  self.cf_random_ddt = np.random.uniform(low=0., high=1.) * self.deltaCF
+	                  # self.cf_random_ddt = np.random.uniform(low=0., high=1.) * self.deltaCF
+	                  self.cf_random_ddt = np.random.normal(loc=0., scale=1.) * self.deltaCF
 	                  
             elif ( Vtb < 0. ):
                 if ( self.x < self.crit_x ):
 	                  self.gap_random_ddt = 0.
                 elif ( self.x >= self.crit_x ):
-	                  self.gap_random_ddt = np.random.uniform(low=0., high=1.) * self.deltaGap
-	              
+	                  # self.gap_random_ddt = np.random.uniform(low=0., high=1.) * self.deltaGap
+	                  self.gap_random_ddt = np.random.normal(loc=0., scale=1.) * self.deltaGap
             else:
                 self.gap_random_ddt = 0.
                 self.cf_random_ddt = 0.
@@ -133,6 +134,8 @@ class rram:
             self.gap_random_ddt = 0.
             self.cf_random_ddt = 0.
 
+        # if dx > 0: print (dx, self.gap_random_ddt)
+        # if dw > 0: print (dw, self.cf_random_ddt)
         self.x += (dx + self.gap_random_ddt) * dt
         self.w += (dw + self.cf_random_ddt) * dt
 
